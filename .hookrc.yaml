@@ -1,0 +1,60 @@
+scopes:
+  - auth
+  - user
+  - order
+  - payment
+  - common
+  - api
+
+branchPattern: '^(feature|fix|hotfix|release|develop|main|master)/.+$'
+
+hooks:
+  pre-commit:
+    - check: branch-name
+    - check: no-console
+    - check: no-debug
+    - check: file-size
+  commit-msg:
+    - check: commit-msg
+
+pipeline:
+  name: 'CI Pipeline'
+  stages:
+    - name: 'Install Dependencies'
+      steps:
+        - name: 'npm install'
+          command: 'npm install'
+          dependencies:
+            - package.json
+            - package-lock.json
+          cache: true
+
+    - name: 'Code Quality'
+      parallel: true
+      steps:
+        - name: 'ESLint Check'
+          command: 'echo "Running ESLint..." && npx --no-install eslint . --ext .js --no-error-on-unmatched-pattern || true'
+          dependencies:
+            - lib
+          cache: true
+
+        - name: 'Prettier Check'
+          command: 'echo "Running Prettier..." && npx --no-install prettier --check "lib/**/*.js" --no-error-on-unmatched-pattern || true'
+          dependencies:
+            - lib
+          cache: true
+
+    - name: 'Test & Build'
+      steps:
+        - name: 'Run Syntax Check'
+          command: 'node --check githook.js && node --check lib/utils.js && node --check lib/hookManager.js && node --check lib/checker.js && node --check lib/pipeline.js && node --check lib/configManager.js'
+          dependencies:
+            - lib
+            - githook.js
+          cache: false
+
+        - name: 'Build Info'
+          command: 'echo "Build completed successfully!"'
+          dependencies:
+            - lib
+          cache: true

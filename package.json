@@ -1,0 +1,20 @@
+{
+  "name": "githook-cli",
+  "version": "1.0.0",
+  "description": "Git Hook配置管理和本地CI流水线CLI工具",
+  "main": "githook.js",
+  "bin": {
+    "githook": "./githook.js"
+  },
+  "scripts": {
+    "test": "node githook.js --help"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
