@@ -8,11 +8,27 @@ scopes:
 
 branchPattern: '^(feature|fix|hotfix|release|develop|main|master)/.+$'
 
+workspaces:
+  - name: core
+    path: lib
+
 hooks:
   pre-commit:
     - check: branch-name
     - check: no-console
+      when:
+        files:
+          - "**/*.js"
+          - "**/*.jsx"
+          - "**/*.ts"
+          - "**/*.tsx"
     - check: no-debug
+      when:
+        files:
+          - "**/*.js"
+          - "**/*.jsx"
+          - "**/*.ts"
+          - "**/*.tsx"
     - check: file-size
   commit-msg:
     - check: commit-msg
